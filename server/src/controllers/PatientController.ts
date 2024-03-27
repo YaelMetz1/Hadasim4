@@ -1,6 +1,15 @@
 import { Request, Response } from "express";
 import * as patientServices from "../services/PatientServices"
 
+export async function getPatient(req: Request, res: Response) {
+  try {
+    const patient = await patientServices.getPatient(+(req.params.patientId));
+    res.status(200).json(patient);
+  } catch (error) {
+    res.status(400).json({ Message: "Error getting patient" });
+  }
+}
+
 export async function getAllPatients(req: Request, res: Response) {
   try {
     const patients = await patientServices.getAllPatients();
@@ -12,19 +21,23 @@ export async function getAllPatients(req: Request, res: Response) {
 
 export async function addPatient(req: Request, res: Response) {
   try {
+    console.log(req.body);
     const patient = await patientServices.addPatient(req.body);
     res.status(200).json(patient);
   } catch (error) {
+    console.log(error);
     res.status(400).json({ Message: "Error inserting patient"});
   }
 }
 
 export async function updatePatient(req: Request, res: Response) {
   try {
+    console.log(req.body);
     const updatedPatient = await patientServices.updatePatient(+(req.params.patientId), req.body);
     res.status(200).json(updatedPatient);
   } catch (error) {
-    res.status(400).json({ Message: "Error updating patient", Error: error });
+    console.log(error);
+    res.status(400).json({ Message: "Error updating patient" });
   }
 }
 

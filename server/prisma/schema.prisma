@@ -40,6 +40,6 @@ model Illness {
   illnessId             Int            @id @default(autoincrement())
   patient               Patient        @relation(fields: [patientId], references: [patientId])
   patientId             Int            @unique
-  ilnessDate            DateTime
+  illnessDate           DateTime
   recoveryDate          DateTime?
 }

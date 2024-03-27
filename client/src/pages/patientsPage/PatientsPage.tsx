@@ -1,12 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridActionsCellItem, GridColDef, GridRowModes } from "@mui/x-data-grid";
 import * as patientRequests from "../../api/PatientRequests";
+import { Button } from "@mui/material";
+import AddPatient from "./shared/addPatient/AddPatient";
+import EditPatient from "./shared/editPatient/EditPatient";
+import PatientDetails from "./shared/patientDetails/PatientDetails";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+
 
 
 export default function PatientsPage() {
   const [rows, setRows] = useState<any[]>([]); 
+  const [addDialog, setAddDialog] = useState(false);
+  const [editDialog, setEditDialog] = useState(false);
+  const [detailsDialog, setDetailsDialog] = useState(false);
+  const [patientDetails, setPatientDetails] = useState();
+
 
   const columns: GridColDef[] = [
+    { field: "patientId", headerName: "patientId", width: 100 },
     { field: "firstName", headerName: "firstName", width: 100 },
     { field: "lastName", headerName: "lastName", width: 170 },
     { field: "id", headerName: "id", width: 170 },
@@ -15,12 +28,24 @@ export default function PatientsPage() {
     { field: "streetNumber", headerName: "streetNumber", type: "number", width: 70 },
     { field: "birthDate", headerName: "birthDate", width: 170 },
     { field: "phoneNumber", headerName: "phoneNumber", width: 100 },
-    { field: "mobilePhoneNumber", headerName: "mobilePhoneNumber", width: 100 },
+    { field: "mobilePhoneNumber", headerName: "mobilePhoneNumber", width: 170 },
+    {
+      field: "actions",
+      headerName: "Actions",
+      width: 120,
+      type: 'actions',
+      cellClassName: 'actions',
+      renderCell: (params) => (
+        <div>
+          <Button startIcon={<EditIcon />} onClick={() => handleUpdate(params.row)}></Button>
+          <Button startIcon={<DeleteIcon />} onClick={() => handleDelete(params.row.patientId)}></Button>
+        </div>
+      ),
+    },
   ];
 
   const fetchData = async () => {
     const data = await patientRequests.getAllPatients();
-    console.log(data);
     setRows(data || []);
   };
 
@@ -28,20 +53,50 @@ export default function PatientsPage() {
     fetchData();
   }, []);
 
+  const handleToggleAddDialog = () => {
+    setAddDialog(!addDialog);
+    fetchData();
+  };
+
+  const handleToggleEditDialog = () => {
+    setEditDialog(!editDialog);
+    fetchData();
+  };
+
+  const handleToggledetailsDialog = () => {
+    setDetailsDialog(!detailsDialog);
+  };
+
+  const handleUpdate = (row: any) => {
+    setPatientDetails(row);
+    setEditDialog(true);
+  };
+
+  const handleDelete = async (id: number) => {
+    await patientRequests.deletePatient(id);
+    fetchData();
+  };
+
+const showPatientDetails = (row: any)=>{
+  setPatientDetails(row);
+  setDetailsDialog(!detailsDialog);
+}
 
   return (
     <div>
       <DataGrid
+        sx={{ '--DataGrid-overlayHeight': '300px' }}
         rows={rows}
         columns={columns}
         getRowId={(row) => row.patientId}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 5 },
-          },
-        }}
-        pageSizeOptions={[5, 10]}
+        onRowClick={(event, row) => showPatientDetails(event.row)}
       />
+       <Button onClick={() => setAddDialog(true)}>Add Patient</Button>
+      {addDialog && <AddPatient onClose={handleToggleAddDialog} />}
+      {editDialog && (
+        <EditPatient patient={patientDetails} onClose={handleToggleEditDialog} />
+      )}
+      {detailsDialog && <PatientDetails patient={patientDetails} onClose={handleToggledetailsDialog} />}
     </div>
   );
 }

@@ -28,7 +28,7 @@ CREATE TABLE "Vaccination" (
 CREATE TABLE "Illness" (
     "illnessId" SERIAL NOT NULL,
     "patientId" INTEGER NOT NULL,
-    "ilnessDate" TIMESTAMP(3) NOT NULL,
+    "illnessDate" TIMESTAMP(3) NOT NULL,
     "recoveryDate" TIMESTAMP(3),
 
     CONSTRAINT "Illness_pkey" PRIMARY KEY ("illnessId")
