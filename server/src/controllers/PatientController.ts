@@ -13,7 +13,17 @@ export async function getPatient(req: Request, res: Response) {
 export async function getAllPatients(req: Request, res: Response) {
   try {
     const patients = await patientServices.getAllPatients();
-    res.status(200).json(patients);
+
+    const modifiedPatients = patients.map(patient => {
+      const { birthDate, ...rest } = patient;
+      const dateWithoutTime = new Date(birthDate).toISOString().split('T')[0];
+      return {
+        ...rest,
+        birthDate: dateWithoutTime 
+      };
+    });
+
+    res.status(200).json(modifiedPatients);
   } catch (error) {
     res.status(400).json({ Message: "Error getting patients" });
   }
@@ -22,18 +32,32 @@ export async function getAllPatients(req: Request, res: Response) {
 export async function addPatient(req: Request, res: Response) {
   try {
     console.log(req.body);
-    const patient = await patientServices.addPatient(req.body);
+    const { birthDate, ...rest } = req.body;
+    const formattedDate =new Date(birthDate as Date); 
+    formattedDate.setUTCHours(0, 0, 0, 0);
+    const formatedPatient= {
+      ...rest,
+      birthDate: formattedDate, 
+    };
+    const patient = await patientServices.addPatient(formatedPatient);
     res.status(200).json(patient);
   } catch (error) {
     console.log(error);
-    res.status(400).json({ Message: "Error inserting patient"});
+    res.status(400).json({ error: error });
   }
 }
 
 export async function updatePatient(req: Request, res: Response) {
   try {
     console.log(req.body);
-    const updatedPatient = await patientServices.updatePatient(+(req.params.patientId), req.body);
+    const { birthDate, ...rest } = req.body;
+    const formattedDate = new Date(birthDate as Date);
+  formattedDate.setUTCHours(0, 0, 0, 0);
+  const formatedPatient= {
+    ...rest,
+    birthDate: formattedDate, 
+  };
+    const updatedPatient = await patientServices.updatePatient(+(req.params.patientId),formatedPatient);
     res.status(200).json(updatedPatient);
   } catch (error) {
     console.log(error);
@@ -46,6 +70,7 @@ export async function deletePatient(req: Request, res: Response) {
     const deletedPatient = await patientServices.deletePatient(+(req.params.patientId));
     res.status(200).json(deletedPatient);
   } catch (error) {
-    res.status(400).json({ Message: "Error deleting patient" });
+    console.log(error);
+    res.status(400).json({ error: error });
   }
 }

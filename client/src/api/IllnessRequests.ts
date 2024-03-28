@@ -13,3 +13,15 @@ export async function getIllnessOfPatient(patientId: number) {
     console.error("Error fetching data:", error);
   }
 }
+
+export async function addIllness(illness: Partial<Illness>): Promise<Illness | undefined> {
+  try {
+    console.log(illness);
+    const response = await axios.post(API_URL + "/addIllness", illness);
+    if (response) {
+      return response.data as Illness;
+    }
+  } catch (error) {
+    console.error("Error inserting data:", error);
+  }
+}

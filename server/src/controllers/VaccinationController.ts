@@ -1,10 +1,21 @@
 import { Request, Response } from "express";
 import * as vaccinationServices from "../services/VaccinationServices"
+import Vaccination from "../types/Vaccination"
 
 export async function getVaccinationsOfPatient(req: Request, res: Response) {
   try {
     const vaccinations = await vaccinationServices.getVaccinationsOfPatient(+(req.params.patientId));
-    res.status(200).json(vaccinations);
+
+    const modifiedVaccinations = vaccinations.map(vaccination => {
+      const { vaccinationDate, ...rest } = vaccination;
+      const dateWithoutTime = new Date(vaccinationDate).toISOString().split('T')[0];
+      return {
+        ...rest,
+        vaccinationDate: dateWithoutTime 
+      };
+    });
+
+    res.status(200).json(modifiedVaccinations);
   } catch (error) {
     res.status(400).json({ Message: "Error getting vaccinations" });
   }
@@ -42,6 +53,6 @@ export async function deleteVaccination(req: Request, res: Response) {
     const deletedVaccination = await vaccinationServices.deleteVaccination(+(req.params.vaccinationId));
     res.status(200).json(deletedVaccination);
   } catch (error) {
-    res.status(400).json({ Message: "Error deleting vaccination" });
+    res.status(400).json(({ error: error }));
   }
 }

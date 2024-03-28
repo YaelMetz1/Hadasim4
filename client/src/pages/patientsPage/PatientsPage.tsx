@@ -7,6 +7,7 @@ import EditPatient from "./shared/editPatient/EditPatient";
 import PatientDetails from "./shared/patientDetails/PatientDetails";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import AddIcon from "@mui/icons-material/Add";
 
 
 
@@ -21,14 +22,14 @@ export default function PatientsPage() {
   const columns: GridColDef[] = [
     { field: "patientId", headerName: "patientId", width: 100 },
     { field: "firstName", headerName: "firstName", width: 100 },
-    { field: "lastName", headerName: "lastName", width: 170 },
-    { field: "id", headerName: "id", width: 170 },
+    { field: "lastName", headerName: "lastName", width: 130 },
+    { field: "id", headerName: "id", width: 130 },
     { field: "city", headerName: "city", width: 130 },
     { field: "street", headerName: "street", width: 100 },
-    { field: "streetNumber", headerName: "streetNumber", type: "number", width: 70 },
-    { field: "birthDate", headerName: "birthDate", width: 170 },
+    { field: "streetNumber", headerName: "streetNumber", type: "number", width: 100 },
+    { field: "birthDate", headerName: "birthDate", type: "Date",  width: 130 },
     { field: "phoneNumber", headerName: "phoneNumber", width: 100 },
-    { field: "mobilePhoneNumber", headerName: "mobilePhoneNumber", width: 170 },
+    { field: "mobilePhoneNumber", headerName: "mobilePhoneNumber", width: 130 },
     {
       field: "actions",
       headerName: "Actions",
@@ -38,7 +39,7 @@ export default function PatientsPage() {
       renderCell: (params) => (
         <div>
           <Button startIcon={<EditIcon />} onClick={() => handleUpdate(params.row)}></Button>
-          <Button startIcon={<DeleteIcon />} onClick={() => handleDelete(params.row.patientId)}></Button>
+          <Button startIcon={<DeleteIcon />} onClick={() => handleDelete(params.row)}></Button>
         </div>
       ),
     },
@@ -72,9 +73,16 @@ export default function PatientsPage() {
     setEditDialog(true);
   };
 
-  const handleDelete = async (id: number) => {
-    await patientRequests.deletePatient(id);
+  const handleDelete = async (row: any) => {
+    console.log(row);
+    if (
+      window.confirm(
+        `Are you sure you want to delete ${row.firstName} ${row.lastName}?`
+      )
+    ) {
+    await patientRequests.deletePatient(+(row.patientId));
     fetchData();
+    }
   };
 
 const showPatientDetails = (row: any)=>{
@@ -91,7 +99,7 @@ const showPatientDetails = (row: any)=>{
         getRowId={(row) => row.patientId}
         onRowClick={(event, row) => showPatientDetails(event.row)}
       />
-       <Button onClick={() => setAddDialog(true)}>Add Patient</Button>
+       <Button startIcon={<AddIcon />} onClick={() => setAddDialog(true)}>Add Patient</Button>
       {addDialog && <AddPatient onClose={handleToggleAddDialog} />}
       {editDialog && (
         <EditPatient patient={patientDetails} onClose={handleToggleEditDialog} />

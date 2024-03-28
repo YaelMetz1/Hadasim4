@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button, Dialog,} from "@mui/material";
 import * as patientRequests from "../../../../api/PatientRequests";
 import Patient from "../../../../types/Patient";
@@ -11,6 +11,11 @@ export default function EditPatient(props: any) {
     props.onClose();
   };
 
+  useEffect(() => {
+console.log(props.patient);
+console.log(typeof(props.patient.birthDate));
+  }, []);
+  
   return (
     <React.Fragment>
       <Dialog
@@ -126,8 +131,8 @@ export default function EditPatient(props: any) {
             id="birthDate"
             name="birthDate"
             label="birth date"
-            type="date"
-            defaultValue={props.patient.date}
+            type="Date"
+            defaultValue={props.patient.birthDate}
             fullWidth
             variant="standard"
           />
@@ -162,3 +167,4 @@ export default function EditPatient(props: any) {
     </React.Fragment>
   );
 }
+

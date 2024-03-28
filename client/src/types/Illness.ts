@@ -1,6 +1,6 @@
 export default interface Illness{
     illnessId: number,
     patientId: number,
-    ilnessDate: Date,
+    illnessDate: Date,
     recoveryDate: Date,
 }

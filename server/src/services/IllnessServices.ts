@@ -20,11 +20,17 @@ export async function getAllIllnesses() {
 }
 
 export async function addIllness(illnessData: Partial<Illness>) {
+  const formattedIllnessDate = new Date(illnessData.illnessDate as Date);
+  formattedIllnessDate.setUTCHours(0, 0, 0, 0);
+
+  const formattedRecoveryDate = new Date(illnessData.recoveryDate as Date);
+  formattedRecoveryDate.setUTCHours(0, 0, 0, 0);
+
   const illness = await prisma.illness.create({
     data: {
       patientId: illnessData.patientId as number,
-      illnessDate: illnessData.illnessDate as Date,
-      recoveryDate: illnessData.recoveryDate as Date,
+      illnessDate: formattedIllnessDate,
+      recoveryDate: formattedRecoveryDate,
     },
   });
   return illness;

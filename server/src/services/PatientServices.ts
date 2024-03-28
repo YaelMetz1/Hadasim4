@@ -20,43 +20,20 @@ export async function getAllPatients() {
 }
 
 export async function addPatient(patientData: Partial<Patient>) {
-  const formattedDate = new Date(patientData.birthDate as Date);
-  formattedDate.setUTCHours(0, 0, 0, 0);
+
   const patient = await prisma.patient.create({
-    data: {
-      firstName: patientData.firstName as string,
-      lastName: patientData.lastName as string,
-      id: patientData.id as string,
-      city: patientData.city as string,
-      street: patientData.street as string,
-      streetNumber: patientData.streetNumber as number,
-      birthDate: formattedDate,
-      phoneNumber: patientData.phoneNumber as string,
-      mobilePhoneNumber: patientData.mobilePhoneNumber as string,
-    },
+    data: patientData as Patient,
   });
   return patient;
 }
 
 export async function updatePatient(patientId: number, patientData: Partial<Patient>) {
-  const formattedDate = new Date(patientData.birthDate as Date);
-  formattedDate.setUTCHours(0, 0, 0, 0);
+  
   const updatedPatient = await prisma.patient.update({
     where: {
       patientId: patientId,
     },
-    // data: patientData,
-    data: {
-      firstName: patientData.firstName as string,
-      lastName: patientData.lastName as string,
-      id: patientData.id as string,
-      city: patientData.city as string,
-      street: patientData.street as string,
-      streetNumber: patientData.streetNumber as number,
-      birthDate: formattedDate,
-      phoneNumber: patientData.phoneNumber as string,
-      mobilePhoneNumber: patientData.mobilePhoneNumber as string,
-    },
+    data: patientData,
   });
   return updatedPatient;
 }
