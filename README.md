@@ -56,20 +56,20 @@
 
   In "Home Page", for watching all the patients, press on "ALL PATIENTS" button:
 
-    ![alt text](image-2.png)
+    ![alt text](README-images/image-2.png)
 
       To add, delete and edit patient click on the buttons marked respectively:
-    ![alt text](image.png)
+    ![alt text](README-images/image.png)
 
       After clicking on edit button you can change his details(as well as the patient`s profile photo):
-      ![alt text](image-5.png)
-      
+      ![alt text](README-images/image-5.png)
+
       To see patient`s details  and for editing his COVID details, click on his row:
-      ![alt text](image-1.png) 
+      ![alt text](README-images/image-1.png) 
 
       Pay attention to insert validate data:
-      ![alt text](image-3.png)
+      ![alt text](README-images/image-3.png)
 
   To see COVID summary details, press on "COVID SUMMARY" button in "Home Page":
-      ![alt text](image-4.png)
+      ![alt text](README-images/image-4.png)
 
