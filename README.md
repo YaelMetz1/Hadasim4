@@ -53,4 +53,6 @@
     you can access the application by visiting http://localhost:3000 in your web browser. 
 
 #Explanation of how to use the site:
+![image](https://github.com/YaelMetz1/Hadasim4/assets/91958101/17c9b3a1-bd9d-4edb-87ca-11f62fe254d9)
 
+  In "Home Page", for watching all the patients press on "ALL PATIENT" button 
