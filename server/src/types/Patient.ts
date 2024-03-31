@@ -8,5 +8,6 @@ export default interface Patient{
     streetNumber: number,
     birthDate: Date,
     phoneNumber: string,
-    mobilePhoneNumber:string
+    mobilePhoneNumber:string,
+    picture: string
 }

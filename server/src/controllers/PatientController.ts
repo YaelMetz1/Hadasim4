@@ -19,7 +19,7 @@ export async function getAllPatients(req: Request, res: Response) {
       const dateWithoutTime = new Date(birthDate).toISOString().split('T')[0];
       return {
         ...rest,
-        birthDate: dateWithoutTime 
+        birthDate: dateWithoutTime
       };
     });
 
@@ -31,36 +31,34 @@ export async function getAllPatients(req: Request, res: Response) {
 
 export async function addPatient(req: Request, res: Response) {
   try {
-    console.log(req.body);
     const { birthDate, ...rest } = req.body;
-    const formattedDate =new Date(birthDate as Date); 
+    const formattedDate = new Date(birthDate as Date);
     formattedDate.setUTCHours(0, 0, 0, 0);
-    const formatedPatient= {
+    const formatedPatient = {
       ...rest,
-      birthDate: formattedDate, 
+      birthDate: formattedDate,
+      picture: req.body.picture || null,
     };
     const patient = await patientServices.addPatient(formatedPatient);
     res.status(200).json(patient);
   } catch (error) {
-    console.log(error);
     res.status(400).json({ error: error });
   }
 }
 
 export async function updatePatient(req: Request, res: Response) {
   try {
-    console.log(req.body);
     const { birthDate, ...rest } = req.body;
     const formattedDate = new Date(birthDate as Date);
-  formattedDate.setUTCHours(0, 0, 0, 0);
-  const formatedPatient= {
-    ...rest,
-    birthDate: formattedDate, 
-  };
-    const updatedPatient = await patientServices.updatePatient(+(req.params.patientId),formatedPatient);
+    formattedDate.setUTCHours(0, 0, 0, 0);
+    const formatedPatient = {
+      ...rest,
+      birthDate: formattedDate,
+      picture: req.body.picture || null,
+    };
+    const updatedPatient = await patientServices.updatePatient(+(req.params.patientId), formatedPatient);
     res.status(200).json(updatedPatient);
   } catch (error) {
-    console.log(error);
     res.status(400).json({ Message: "Error updating patient" });
   }
 }
@@ -70,7 +68,6 @@ export async function deletePatient(req: Request, res: Response) {
     const deletedPatient = await patientServices.deletePatient(+(req.params.patientId));
     res.status(200).json(deletedPatient);
   } catch (error) {
-    console.log(error);
     res.status(400).json({ error: error });
   }
 }

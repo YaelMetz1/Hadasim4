@@ -10,6 +10,7 @@ CREATE TABLE "Patient" (
     "birthDate" TIMESTAMP(3) NOT NULL,
     "phoneNumber" TEXT NOT NULL,
     "mobilePhoneNumber" TEXT NOT NULL,
+    "picture" TEXT,
 
     CONSTRAINT "Patient_pkey" PRIMARY KEY ("patientId")
 );
@@ -29,16 +30,19 @@ CREATE TABLE "Illness" (
     "illnessId" SERIAL NOT NULL,
     "patientId" INTEGER NOT NULL,
     "illnessDate" TIMESTAMP(3) NOT NULL,
-    "recoveryDate" TIMESTAMP(3),
+    "recoveryDate" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Illness_pkey" PRIMARY KEY ("illnessId")
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Patient_id_key" ON "Patient"("id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Illness_patientId_key" ON "Illness"("patientId");
 
 -- AddForeignKey
-ALTER TABLE "Vaccination" ADD CONSTRAINT "Vaccination_patientId_fkey" FOREIGN KEY ("patientId") REFERENCES "Patient"("patientId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Vaccination" ADD CONSTRAINT "Vaccination_patientId_fkey" FOREIGN KEY ("patientId") REFERENCES "Patient"("patientId") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Illness" ADD CONSTRAINT "Illness_patientId_fkey" FOREIGN KEY ("patientId") REFERENCES "Patient"("patientId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Illness" ADD CONSTRAINT "Illness_patientId_fkey" FOREIGN KEY ("patientId") REFERENCES "Patient"("patientId") ON DELETE CASCADE ON UPDATE CASCADE;

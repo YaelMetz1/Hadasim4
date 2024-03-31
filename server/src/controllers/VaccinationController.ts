@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import * as vaccinationServices from "../services/VaccinationServices"
-import Vaccination from "../types/Vaccination"
 
 export async function getVaccinationsOfPatient(req: Request, res: Response) {
   try {
@@ -11,7 +10,7 @@ export async function getVaccinationsOfPatient(req: Request, res: Response) {
       const dateWithoutTime = new Date(vaccinationDate).toISOString().split('T')[0];
       return {
         ...rest,
-        vaccinationDate: dateWithoutTime 
+        vaccinationDate: dateWithoutTime
       };
     });
 
@@ -35,7 +34,7 @@ export async function addVaccination(req: Request, res: Response) {
     const vaccination = await vaccinationServices.addVaccination(req.body);
     res.status(200).json(vaccination);
   } catch (error) {
-    res.status(400).json({ Message: "Error inserting vaccination"});
+    res.status(400).json({ Message: "Error inserting vaccination" });
   }
 }
 
@@ -54,5 +53,14 @@ export async function deleteVaccination(req: Request, res: Response) {
     res.status(200).json(deletedVaccination);
   } catch (error) {
     res.status(400).json(({ error: error }));
+  }
+}
+
+export async function getAllVaccinatedPatients(req: Request, res: Response) {
+  try {
+    const patients = await vaccinationServices.getAllVaccinatedPatients();
+    res.status(200).json(patients);
+  } catch (error) {
+    res.status(400).json({ error: error });
   }
 }

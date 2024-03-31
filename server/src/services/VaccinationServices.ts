@@ -35,7 +35,7 @@ export async function addVaccination(vaccinationData: Partial<Vaccination>) {
 export async function updateVaccination(vaccinationId: number, vaccinationData: Partial<Vaccination>) {
   const updatedVaccination = await prisma.vaccination.update({
     where: {
-        vaccinationId: vaccinationId,
+      vaccinationId: vaccinationId,
     },
     data: vaccinationData,
   });
@@ -45,8 +45,15 @@ export async function updateVaccination(vaccinationId: number, vaccinationData: 
 export async function deleteVaccination(vaccinationId: number) {
   const deletedVaccination = await prisma.vaccination.delete({
     where: {
-        vaccinationId: vaccinationId,
+      vaccinationId: vaccinationId,
     },
   });
   return deletedVaccination;
+}
+
+export async function getAllVaccinatedPatients() {
+  const patients = await prisma.vaccination.groupBy({
+    by: ['patientId'],
+  });
+  return patients;
 }

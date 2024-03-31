@@ -1,21 +1,17 @@
-import React, { useEffect } from "react";
-import { DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button, Dialog,} from "@mui/material";
+import React, { useState } from "react";
+import { DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button, Dialog, } from "@mui/material";
 import * as patientRequests from "../../../../api/PatientRequests";
 import Patient from "../../../../types/Patient";
 
 export default function EditPatient(props: any) {
-  const [open, setOpen] = React.useState(true);
+
+  const [open, setOpen] = useState(true);
 
   const handleClose = () => {
     setOpen(false);
     props.onClose();
   };
 
-  useEffect(() => {
-console.log(props.patient);
-console.log(typeof(props.patient.birthDate));
-  }, []);
-  
   return (
     <React.Fragment>
       <Dialog
@@ -37,11 +33,12 @@ console.log(typeof(props.patient.birthDate));
               birthDate: (formData.get("birthDate") as unknown) as Date,
               phoneNumber: formData.get("phoneNumber") as string,
               mobilePhoneNumber: formData.get("mobilePhoneNumber") as string,
+              picture: formData.get("picture") as string,
             });
             handleClose();
           },
         }}
-       >
+      >
         <DialogTitle>Edit Patient</DialogTitle>
         <DialogContent>
           <DialogContentText></DialogContentText>
@@ -124,7 +121,7 @@ console.log(typeof(props.patient.birthDate));
             fullWidth
             variant="standard"
           />
-        <TextField
+          <TextField
             autoFocus
             required
             margin="dense"
@@ -136,7 +133,7 @@ console.log(typeof(props.patient.birthDate));
             fullWidth
             variant="standard"
           />
-        <TextField
+          <TextField
             autoFocus
             required
             margin="dense"
@@ -147,7 +144,7 @@ console.log(typeof(props.patient.birthDate));
             fullWidth
             variant="standard"
           />
-        <TextField
+          <TextField
             autoFocus
             required
             margin="dense"
@@ -155,6 +152,16 @@ console.log(typeof(props.patient.birthDate));
             name="mobilePhoneNumber"
             label="mobilePhoneNumber"
             defaultValue={props.patient.mobilePhoneNumber}
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="picture"
+            name="picture"
+            label="pictureUrl"
+            defaultValue={props.patient.picture}
             fullWidth
             variant="standard"
           />

@@ -10,10 +10,12 @@ import {
   TextField,
   Avatar,
   Grid,
+  Container,
+  Divider,
+  Box,
 } from "@mui/material";
 import * as vaccinationRequests from "../../../../api/VaccinationRequests";
 import * as illnessRequests from "../../../../api/IllnessRequests";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import AddIcon from "@mui/icons-material/Add";
 import Vaccination from "../../../../types/Vaccination";
 import Illness from "../../../../types/Illness";
@@ -21,7 +23,7 @@ import Illness from "../../../../types/Illness";
 export default function patientDetails(props: any) {
 
   const [open, setOpen] = useState(true);
-  const [vaccinationsRows, setVaccinationsRows] = useState<any[]>([]);
+  const [vaccinations, setVaccinations] = useState<any[]>([]);
   const [illness, setIllness] = useState<any>();
 
   const [hasVaccin, setHasVaccin] = useState(false);
@@ -30,22 +32,16 @@ export default function patientDetails(props: any) {
   const [addVaccin, setAddVaccin] = useState(false);
   const [addIllness, setAddIllness] = useState(false);
 
-  const [dateError, setDateError] = useState("");
+  const [recoveryDateError, setRecoveryDateError] = useState("");
+  const [illnessDateError, setIllnessDateError] = useState("");
+  const [vaccinationDateError, setVaccinationDateError] = useState("");
 
-  const columns: GridColDef[] = [
-    { field: "vaccinationDate", headerName: "Vaccination Date", width: 170 },
-    {
-      field: "vaccinationProducer",
-      headerName: "Vaccination Producer",
-      width: 170,
-    },
-  ];
 
   const fetchVaccinations = async () => {
     const data = await vaccinationRequests.getVaccinationsOfPatient(
       +props.patient.patientId
     );
-    await setVaccinationsRows(data || []);
+    await setVaccinations(data || []);
     if (data?.length != 0) {
       setHasVaccin(true);
     }
@@ -84,14 +80,20 @@ export default function patientDetails(props: any) {
   ) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
+    const vaccinationDate=formData.get("vaccinationDate") as unknown as Date;
+    if(vaccinationDate>new Date()){
+      setVaccinationDateError(`Date cannot be future date`);
+    } else{
     const vaccination: Vaccination | undefined =
       await vaccinationRequests.addVaccination({
         patientId: +(props.patient.patientId as string),
-        vaccinationDate: formData.get("vaccinationDate") as unknown as Date,
+        vaccinationDate: vaccinationDate,
         vaccinationProducer: formData.get("vaccinationProducer") as string,
       });
+    setVaccinationDateError("");
     setAddVaccin(false);
     fetchVaccinations();
+    }
   };
 
   const handleAddIllnessSubmit = async (
@@ -99,17 +101,26 @@ export default function patientDetails(props: any) {
   ) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    if((formData.get("recoveryDate") as unknown as Date)<(formData.get("ilnessDate") as unknown as Date)){
-      setDateError(`recovery date can't be before illness date`);
-    }else{
-    const illness: Illness | undefined = await illnessRequests.addIllness({
-      patientId: +(props.patient.patientId as string),
-      illnessDate: formData.get("ilnessDate") as unknown as Date,
-      recoveryDate: formData.get("recoveryDate") as unknown as Date,
-    });
-    setAddIllness(false);
-    fetchIllness();
-  }
+    const illnessDate=formData.get("ilnessDate") as unknown as Date;
+    const recoveryDate=formData.get("recoveryDate") as unknown as Date;
+
+    if(illnessDate>new Date()){
+      setIllnessDateError(`Date cannot be future date`);
+    } else if(recoveryDate>new Date()){
+      setRecoveryDateError(`Date cannot be future date`);
+    } else if ( recoveryDate < illnessDate ) {
+      setRecoveryDateError(`recovery date can't be before illness date`);
+    } else {
+      const illness: Illness | undefined = await illnessRequests.addIllness({
+        patientId: +(props.patient.patientId as string),
+        illnessDate: illnessDate,
+        recoveryDate: recoveryDate,
+      });
+      setIllnessDateError("");
+      setRecoveryDateError("");
+      setAddIllness(false);
+      fetchIllness();
+    }
   };
 
   return (
@@ -118,43 +129,51 @@ export default function patientDetails(props: any) {
         <DialogTitle>Patient`s COVID Details</DialogTitle>
         <DialogContent>
           <DialogContentText></DialogContentText>
-          <Typography sx={{ fontSize: 14 }} color="text.secondary">
+          <Typography sx={{ fontSize: 14 }}>
             Name: {props.patient.firstName} {props.patient.lastName}
           </Typography>
           <Grid item xs={2} container textAlign="right">
             <Avatar
               sx={{ m: 1, width: 56, height: 56 }}
               alt={props.patient.firstName}
-              src="/broken-image.jpg"
+              src={props.patient.picture}
             ></Avatar>
+
           </Grid>
           {hasVaccin ? (
-            <div>
-              <Typography sx={{ fontSize: 14 }} color="text.secondary">
+            <Box>
+              <Typography sx={{ fontSize: 20 }} >
                 Vaccinations:
               </Typography>
-              <DataGrid
-                rows={vaccinationsRows}
-                columns={columns}
-                getRowId={(row) => row.vaccinationId}
-              />
-            </div>
+              <Container >
+                {vaccinations.map((vaccin) => (
+                  <Container key={vaccin.vaccinationId}>
+                    <Typography sx={{ fontSize: 14 }} >
+                      Date: {vaccin.vaccinationDate} &nbsp;&nbsp;&nbsp; Producer: {vaccin.vaccinationProducer}
+                    </Typography>
+                  </Container>
+
+                ))}
+              </Container>
+            </Box>
           ) : (
             <Typography sx={{ fontSize: 14 }} color="text.secondary">
               {props.patient.firstName} doesn`t have vaccinations
             </Typography>
           )}
-          {(vaccinationsRows.length!=4)?<Button
+          {(vaccinations.length != 4) ? <Button
             color="primary"
+            size="small"
             startIcon={<AddIcon />}
             onClick={handleAddVaccinClick}
           >
             Add Vaccination
-          </Button>: null}
+          </Button> : null}
 
           {addVaccin ? (
             <form onSubmit={handleAddVaccinSubmit}>
               <TextField
+                error={!!vaccinationDateError}
                 autoFocus
                 required
                 variant="outlined"
@@ -163,6 +182,7 @@ export default function patientDetails(props: any) {
                 label="Vaccination Date"
                 type="date"
                 margin="dense"
+                helperText={vaccinationDateError}
               />
               <TextField
                 autoFocus
@@ -178,29 +198,32 @@ export default function patientDetails(props: any) {
               </Button>
             </form>
           ) : null}
-          
+          <Divider variant="middle" />
+          <br />
           {hadIllness ? (
-            <div>
-              <Typography sx={{ fontSize: 14 }} color="text.secondary">
+            <Box>
+              <Typography sx={{ fontSize: 20 }} >
                 Illness:
               </Typography>
-              <Typography sx={{ fontSize: 14 }} color="text.secondary">
+              <Typography sx={{ fontSize: 14 }} >
                 Illness Date: {illness.illnessDate} &nbsp;&nbsp;&nbsp; Recovery Date: {illness.recoveryDate}
               </Typography>
-            </div>
+            </Box>
           ) : <Button
-          color="primary"
-          startIcon={<AddIcon />}
-          onClick={handleIllnessClick}
-        >
-          Add Illness
-        </Button>}
+            color="primary"
+            size="small"
+            startIcon={<AddIcon />}
+            onClick={handleIllnessClick}
+          >
+            Add Illness
+          </Button>}
           {addIllness ? (
             <form onSubmit={handleAddIllnessSubmit}>
               <Typography sx={{ fontSize: 14 }} color="text.secondary">
                 Ilness Date:
               </Typography>
               <TextField
+                error={!!illnessDateError}
                 autoFocus
                 required
                 variant="outlined"
@@ -208,12 +231,13 @@ export default function patientDetails(props: any) {
                 name="ilnessDate"
                 type="date"
                 margin="dense"
+                helperText={illnessDateError}
               />
               <Typography sx={{ fontSize: 14 }} color="text.secondary">
                 Recovery Date:
               </Typography>
               <TextField
-              error={!!dateError}
+                error={!!recoveryDateError}
                 autoFocus
                 required
                 variant="outlined"
@@ -221,7 +245,7 @@ export default function patientDetails(props: any) {
                 name="recoveryDate"
                 type="date"
                 margin="dense"
-                helperText={dateError}
+                helperText={recoveryDateError}
               />
               <Button type="submit" variant="contained" color="primary">
                 Add

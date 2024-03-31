@@ -39,7 +39,7 @@ export async function addIllness(illnessData: Partial<Illness>) {
 export async function updateIllness(illnessId: number, illnessData: Partial<Illness>) {
   const updatedIllness = await prisma.illness.update({
     where: {
-        illnessId: illnessId,
+      illnessId: illnessId,
     },
     data: illnessData,
   });
@@ -49,8 +49,30 @@ export async function updateIllness(illnessId: number, illnessData: Partial<Illn
 export async function deleteIllness(illnessId: number) {
   const deletedIllness = await prisma.illness.delete({
     where: {
-        illnessId: illnessId,
+      illnessId: illnessId,
     },
   });
   return deletedIllness;
+}
+
+export async function getAllIlnessesLastMonth() {
+  const currentDate=new Date();
+  const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth() -1 , 1);
+  const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
+
+  const patients = await prisma.illness.findMany({
+    where: {
+      OR:[{
+        illnessDate: {
+        lte: lastDay,
+        gte: firstDay,
+      }},
+     { recoveryDate: 
+      {
+        lte: lastDay,
+        gte: firstDay,
+      }},
+    ]
+    },  });
+  return patients;
 }

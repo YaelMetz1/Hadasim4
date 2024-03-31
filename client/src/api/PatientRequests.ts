@@ -16,7 +16,6 @@ export async function getAllPatients() {
 
 export async function addPatient(pateint: Partial<Patient>): Promise<Patient | undefined> {
   try {
-    console.log(pateint);
     const response = await axios.post(API_URL + "/addPatient", pateint);
     if (response) {
       return response.data as Patient;
@@ -26,7 +25,7 @@ export async function addPatient(pateint: Partial<Patient>): Promise<Patient | u
   }
 }
 
-export async function updatePatient(patient: Partial<Patient>) : Promise<Patient|undefined>{
+export async function updatePatient(patient: Partial<Patient>): Promise<Patient | undefined> {
   try {
     const response = await axios.put(API_URL + `/updatePatient/${patient.patientId}`, patient);
     if (response) {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { DataGrid, GridActionsCellItem, GridColDef, GridRowModes } from "@mui/x-data-grid";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import * as patientRequests from "../../api/PatientRequests";
 import { Button } from "@mui/material";
 import AddPatient from "./shared/addPatient/AddPatient";
@@ -10,9 +10,9 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import AddIcon from "@mui/icons-material/Add";
 
 
-
 export default function PatientsPage() {
-  const [rows, setRows] = useState<any[]>([]); 
+
+  const [rows, setRows] = useState<any[]>([]);
   const [addDialog, setAddDialog] = useState(false);
   const [editDialog, setEditDialog] = useState(false);
   const [detailsDialog, setDetailsDialog] = useState(false);
@@ -20,16 +20,16 @@ export default function PatientsPage() {
 
 
   const columns: GridColDef[] = [
-    { field: "patientId", headerName: "patientId", width: 100 },
-    { field: "firstName", headerName: "firstName", width: 100 },
-    { field: "lastName", headerName: "lastName", width: 130 },
-    { field: "id", headerName: "id", width: 130 },
-    { field: "city", headerName: "city", width: 130 },
-    { field: "street", headerName: "street", width: 100 },
-    { field: "streetNumber", headerName: "streetNumber", type: "number", width: 100 },
-    { field: "birthDate", headerName: "birthDate", type: "Date",  width: 130 },
-    { field: "phoneNumber", headerName: "phoneNumber", width: 100 },
-    { field: "mobilePhoneNumber", headerName: "mobilePhoneNumber", width: 130 },
+    { field: "patientId", headerName: "Patient-Id", width: 100 },
+    { field: "firstName", headerName: "First-name", width: 100 },
+    { field: "lastName", headerName: "Last-name", width: 130 },
+    { field: "id", headerName: "Id", width: 130 },
+    { field: "city", headerName: "City", width: 130 },
+    { field: "street", headerName: "Street", width: 100 },
+    { field: "streetNumber", headerName: "Street-number", width: 130 },
+    { field: "birthDate", headerName: "Birth-date", type: "Date", width: 130 },
+    { field: "phoneNumber", headerName: "Phone", width: 100 },
+    { field: "mobilePhoneNumber", headerName: "Cell-phone", width: 130 },
     {
       field: "actions",
       headerName: "Actions",
@@ -74,21 +74,20 @@ export default function PatientsPage() {
   };
 
   const handleDelete = async (row: any) => {
-    console.log(row);
     if (
       window.confirm(
         `Are you sure you want to delete ${row.firstName} ${row.lastName}?`
       )
     ) {
-    await patientRequests.deletePatient(+(row.patientId));
-    fetchData();
+      await patientRequests.deletePatient(+(row.patientId));
+      fetchData();
     }
   };
 
-const showPatientDetails = (row: any)=>{
-  setPatientDetails(row);
-  setDetailsDialog(!detailsDialog);
-}
+  const showPatientDetails = (row: any) => {
+    setPatientDetails(row);
+    setDetailsDialog(!detailsDialog);
+  }
 
   return (
     <div>
@@ -97,9 +96,9 @@ const showPatientDetails = (row: any)=>{
         rows={rows}
         columns={columns}
         getRowId={(row) => row.patientId}
-        onRowClick={(event, row) => showPatientDetails(event.row)}
+        onRowClick={(event) => showPatientDetails(event.row)}
       />
-       <Button startIcon={<AddIcon />} onClick={() => setAddDialog(true)}>Add Patient</Button>
+      <Button startIcon={<AddIcon />} onClick={() => setAddDialog(true)}>Add Patient</Button>
       {addDialog && <AddPatient onClose={handleToggleAddDialog} />}
       {editDialog && (
         <EditPatient patient={patientDetails} onClose={handleToggleEditDialog} />

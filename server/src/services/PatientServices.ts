@@ -20,7 +20,6 @@ export async function getAllPatients() {
 }
 
 export async function addPatient(patientData: Partial<Patient>) {
-
   const patient = await prisma.patient.create({
     data: patientData as Patient,
   });
@@ -28,7 +27,7 @@ export async function addPatient(patientData: Partial<Patient>) {
 }
 
 export async function updatePatient(patientId: number, patientData: Partial<Patient>) {
-  
+
   const updatedPatient = await prisma.patient.update({
     where: {
       patientId: patientId,

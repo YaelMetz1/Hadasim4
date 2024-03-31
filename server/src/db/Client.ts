@@ -7,5 +7,4 @@ process.on('SIGINT', async () => {
     process.exit();
   });
   
-
 export default prisma;
