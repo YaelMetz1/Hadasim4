@@ -61,6 +61,9 @@
       To add, delete and edit patient click on the buttons marked respectively:
     ![alt text](image.png)
 
+      After clicking on edit button you can change his details(as well as the patient`s profile photo):
+      ![alt text](image-5.png)
+      
       To see patient`s details  and for editing his COVID details, click on his row:
       ![alt text](image-1.png) 
 

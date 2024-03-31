@@ -23,7 +23,7 @@ export default function EditPatient(props: any) {
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
             const patient: Patient | undefined = await patientRequests.updatePatient({
-              patientId: +(formData.get("patientId") as string),
+              patientId: +(props.patient.patientId as string),
               firstName: formData.get("firstName") as string,
               lastName: formData.get("lastName") as string,
               id: formData.get("id") as string,
@@ -42,17 +42,6 @@ export default function EditPatient(props: any) {
         <DialogTitle>Edit Patient</DialogTitle>
         <DialogContent>
           <DialogContentText></DialogContentText>
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="patientId"
-            name="patientId"
-            label="patientId"
-            defaultValue={props.patient.patientId}
-            fullWidth
-            variant="standard"
-          />
           <TextField
             autoFocus
             required
