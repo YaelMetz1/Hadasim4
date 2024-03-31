@@ -53,6 +53,20 @@
     you can access the application by visiting http://localhost:3000 in your web browser. 
 
 #Explanation of how to use the site:
-![image](https://github.com/YaelMetz1/Hadasim4/assets/91958101/17c9b3a1-bd9d-4edb-87ca-11f62fe254d9)
 
-  In "Home Page", for watching all the patients press on "ALL PATIENT" button 
+  In "Home Page", for watching all the patients, press on "ALL PATIENTS" button:
+
+    ![alt text](image-2.png)
+
+      To add, delete and edit patient click on the buttons marked respectively:
+    ![alt text](image.png)
+
+      To see patient`s details  and for editing his COVID details, click on his row:
+      ![alt text](image-1.png) 
+
+      Pay attention to insert validate data:
+      ![alt text](image-3.png)
+
+  To see COVID summary details, press on "COVID SUMMARY" button in "Home Page":
+      ![alt text](image-4.png)
+

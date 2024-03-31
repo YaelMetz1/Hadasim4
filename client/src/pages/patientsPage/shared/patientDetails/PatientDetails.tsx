@@ -81,7 +81,9 @@ export default function patientDetails(props: any) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const vaccinationDate=formData.get("vaccinationDate") as unknown as Date;
-    if(vaccinationDate>new Date()){
+
+    if(new Date(vaccinationDate)>new Date()){
+      console.log(vaccinationDate);
       setVaccinationDateError(`Date cannot be future date`);
     } else{
     const vaccination: Vaccination | undefined =
@@ -104,9 +106,10 @@ export default function patientDetails(props: any) {
     const illnessDate=formData.get("ilnessDate") as unknown as Date;
     const recoveryDate=formData.get("recoveryDate") as unknown as Date;
 
-    if(illnessDate>new Date()){
+    if(new Date(illnessDate)>new Date()){
       setIllnessDateError(`Date cannot be future date`);
-    } else if(recoveryDate>new Date()){
+    } else if(new Date(recoveryDate)>new Date()){
+      setIllnessDateError("");
       setRecoveryDateError(`Date cannot be future date`);
     } else if ( recoveryDate < illnessDate ) {
       setRecoveryDateError(`recovery date can't be before illness date`);
