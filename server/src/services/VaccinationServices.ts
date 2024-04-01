@@ -20,14 +20,9 @@ export async function getAllVaccinations() {
 }
 
 export async function addVaccination(vaccinationData: Partial<Vaccination>) {
-  const formattedDate = new Date(vaccinationData.vaccinationDate as Date);
-  formattedDate.setUTCHours(0, 0, 0, 0);
+
   const vaccination = await prisma.vaccination.create({
-    data: {
-      patientId: vaccinationData.patientId as number,
-      vaccinationDate: formattedDate,
-      vaccinationProducer: vaccinationData.vaccinationProducer as string,
-    },
+    data: vaccinationData as Vaccination
   });
   return vaccination;
 }

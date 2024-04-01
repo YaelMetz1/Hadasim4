@@ -21,7 +21,7 @@
   
     Make sure you have Node.js installed. You can download and install it from Node.js website.
     npm (Node Package Manager) comes bundled with Node.js installation. Ensure npm is properly installed by running npm -v in your terminal.
-  
+
   2.Clone the repository: git clone https://github.com/YaelMetz1/Hadasim4.git
   
   3.Install dependencies:
@@ -35,19 +35,21 @@
   4.Database setup:
   
     Make sure you have PostgreSQL installed and running. Set up your database connection details in the backend's .env file.
+  5.Prisma
+    In order to generate the Prisma Client library based on Prisma schema run: $npx prisma generate.
   
-  5.Start the backend server:
+  6.Start the backend server:
   
     Navigate to the server directory: $cd server
     and then run the command: $npx ts-node src/index.ts
   
-  6.Start the frontend development server:
+  7.Start the frontend development server:
   
     Open new terminal.
     Navigate to the frontend directory: $cd client
     and then run the command: $npm start
   
-  7.Accessing the application:
+  8.Accessing the application:
   
     Once both the backend server and frontend development server are running, 
     you can access the application by visiting http://localhost:3000 in your web browser. 

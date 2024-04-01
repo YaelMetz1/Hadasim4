@@ -19,34 +19,65 @@ export async function getIllnessOfPatient(req: Request, res: Response) {
       res.status(200).json(illness);
     }
   } catch (error) {
-    res.status(400).json({ Message: "Error getting illness" });
+    res.status(400).json({error: error});
   }
 }
 
 export async function getAllIllnesses(req: Request, res: Response) {
   try {
     const illnesses = await illnessServices.getAllIllnesses();
-    res.status(200).json(illnesses);
+
+    const modifiedIllnesses = illnesses.map(illness => {
+      const { illnessDate, recoveryDate, ...rest } = illness;
+      const illnessDateWithoutTime = new Date(illnessDate).toISOString().split('T')[0];
+      const recoveryDateWithoutTime = new Date(recoveryDate).toISOString().split('T')[0];
+      return {
+        ...rest,
+        illnessDate: illnessDateWithoutTime,
+        recoveryDate: recoveryDateWithoutTime,
+      };
+    });
+    res.status(200).json(modifiedIllnesses);
   } catch (error) {
-    res.status(400).json({ Message: "Error getting illnesses" });
+    res.status(400).json({ error: error });
   }
 }
 
 export async function addIllness(req: Request, res: Response) {
   try {
-    const illness = await illnessServices.addIllness(req.body);
+    const { illnessDate, recoveryDate, ...rest } = req.body;
+    const formattedIllnessDate = new Date(illnessDate as Date);
+    formattedIllnessDate.setUTCHours(0, 0, 0, 0);
+    const formattedRecoveryDate = new Date(recoveryDate as Date);
+    formattedRecoveryDate.setUTCHours(0, 0, 0, 0);
+    const formatedPatient = {
+      ...rest,
+      illnessDate: formattedIllnessDate,
+      recoveryDate: formattedRecoveryDate,
+    };
+    const illness = await illnessServices.addIllness(formatedPatient);
     res.status(200).json(illness);
   } catch (error) {
-    res.status(400).json({ Message: "Error inserting illness" });
+    res.status(400).json({ error: error });
   }
 }
 
 export async function updateIllness(req: Request, res: Response) {
   try {
-    const updatedPatient = await illnessServices.updateIllness(+(req.params.patientId), req.body);
+    const { illnessDate, recoveryDate, ...rest } = req.body;
+    const formattedIllnessDate = new Date(illnessDate as Date);
+    formattedIllnessDate.setUTCHours(0, 0, 0, 0);
+    const formattedRecoveryDate = new Date(recoveryDate as Date);
+    formattedRecoveryDate.setUTCHours(0, 0, 0, 0);
+    const formatedPatient = {
+      ...rest,
+      illnessDate: formattedIllnessDate,
+      recoveryDate: formattedRecoveryDate,
+    };
+    const updatedPatient = await illnessServices.updateIllness(+(req.params.illnessId), formatedPatient);
     res.status(200).json(updatedPatient);
   } catch (error) {
-    res.status(400).json({ Message: "Error updating illness" });
+    res.status(400).json({ error: error });
   }
 }
 
@@ -59,10 +90,21 @@ export async function deleteIllness(req: Request, res: Response) {
   }
 }
 
-export async function getAllIlnessesLastMonth(req: Request, res: Response) {
+export async function getAllIlnessesLastMonth(res: Response) {
   try {
-    const patients = await illnessServices.getAllIlnessesLastMonth();
-    res.status(200).json(patients);
+    const illnesses = await illnessServices.getAllIlnessesLastMonth();
+
+    const modifiedIllnesses = illnesses.map(illness => {
+      const { illnessDate, recoveryDate, ...rest } = illness;
+      const illnessDateWithoutTime = new Date(illnessDate).toISOString().split('T')[0];
+      const recoveryDateWithoutTime = new Date(recoveryDate).toISOString().split('T')[0];
+      return {
+        ...rest,
+        illnessDate: illnessDateWithoutTime,
+        recoveryDate: recoveryDateWithoutTime,
+      };
+    });
+    res.status(200).json(modifiedIllnesses);
   } catch (error) {
     res.status(400).json({ error: error });
   }

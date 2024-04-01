@@ -1,14 +1,23 @@
 import React, { useState } from "react";
-import { DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button, Dialog, } from "@mui/material";
+import {
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  TextField,
+  DialogActions,
+  Button,
+  Dialog,
+} from "@mui/material";
 import * as patientRequests from "../../../../api/PatientRequests";
 import Patient from "../../../../types/Patient";
 
 export default function AddPatient(props: any) {
-  
   const [open, setOpen] = useState(true);
-  const [idError, setIdError] = useState('');
-  const [phoneError, setPhoneError] = useState('');
-  const [mobilePhoneError, setMobilePhoneError] = useState('');
+  const [idError, setIdError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [mobilePhoneError, setMobilePhoneError] = useState("");
+
+  const request: string = props.request;
 
   const handleClose = () => {
     setOpen(false);
@@ -18,50 +27,81 @@ export default function AddPatient(props: any) {
   const ValidationCheck = (value: string, length: number, field: string) => {
     if (isNaN(Number(value))) {
       switch (field) {
-        case ("id"): setIdError("Id must includes numbers only"); break;
-        case ("phoneNumber"): setPhoneError("phone must includes numbers only"); break;
-        case ("mobilePhoneNumber"): setMobilePhoneError("mobile phone must includes numbers only"); break;
+        case "id":
+          setIdError("Id must includes numbers only");
+          break;
+        case "phoneNumber":
+          setPhoneError("phone must includes numbers only");
+          break;
+        case "mobilePhoneNumber":
+          setMobilePhoneError("mobile phone must includes numbers only");
+          break;
       }
       return false;
-    }
-    else if (value.length != length) {
+    } else if (value.length != length) {
       switch (field) {
-        case ("id"): setIdError(`Id must have ${length} numbers`); break;
-        case ("phoneNumber"): setPhoneError(`phone must have ${length} numbers`); break;
-        case ("mobilePhoneNumber"): setMobilePhoneError(`mobile phone must have ${length} numbers`); break;
+        case "id":
+          setIdError(`Id must have ${length} numbers`);
+          break;
+        case "phoneNumber":
+          setPhoneError(`phone must have ${length} numbers`);
+          break;
+        case "mobilePhoneNumber":
+          setMobilePhoneError(`mobile phone must have ${length} numbers`);
+          break;
       }
       return false;
     }
     switch (field) {
-      case ("id"): setIdError(""); break;
-      case ("phoneNumber"): setPhoneError(""); break;
-      case ("mobilePhoneNumber"): setMobilePhoneError(""); break;
+      case "id":
+        setIdError("");
+        break;
+      case "phoneNumber":
+        setPhoneError("");
+        break;
+      case "mobilePhoneNumber":
+        setMobilePhoneError("");
+        break;
     }
     return true;
-  }
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     if (ValidationCheck(formData.get("id") as string, 9, "id") &&
       ValidationCheck(formData.get("phoneNumber") as string, 7, "phoneNumber") &&
-      ValidationCheck(formData.get("mobilePhoneNumber") as string, 10, "mobilePhoneNumber")) {
-      const patient: Patient | undefined = await patientRequests.addPatient({
+      ValidationCheck(formData.get("mobilePhoneNumber") as string, 10, "mobilePhoneNumber")
+    ) {
+      const patient = {
         firstName: formData.get("firstName") as string,
         lastName: formData.get("lastName") as string,
         id: formData.get("id") as string,
         city: formData.get("city") as string,
         street: formData.get("street") as string,
         streetNumber: +(formData.get("streetNumber") as string),
-        birthDate: (formData.get("birthDate") as unknown) as Date,
+        birthDate: formData.get("birthDate") as unknown as Date,
         phoneNumber: formData.get("phoneNumber") as string,
         mobilePhoneNumber: formData.get("mobilePhoneNumber") as string,
         picture: formData.get("picture") as string,
-      });
+      };
+
+      if (request === "add") {
+        const result: Patient | undefined = await patientRequests.addPatient(
+          patient
+        );
+      } else if (request === "edit") {
+        const patientData = {
+          ...patient,
+          patientId: props.patient.patientId,
+        };
+        const result: Patient | undefined = await patientRequests.updatePatient(
+          patientData
+        );
+      }
       handleClose();
     }
-  }
-
+  };
 
   return (
     <React.Fragment>
@@ -70,10 +110,12 @@ export default function AddPatient(props: any) {
         onClose={handleClose}
         PaperProps={{
           component: "form",
-          onSubmit: handleSubmit
+          onSubmit: handleSubmit,
         }}
       >
-        <DialogTitle>Add New Patient</DialogTitle>
+        <DialogTitle>
+          {request === "add" ? "Add New Patient" : "Edit Patient"}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText></DialogContentText>
           <TextField
@@ -86,6 +128,7 @@ export default function AddPatient(props: any) {
             type="name"
             fullWidth
             variant="standard"
+            defaultValue={request === "edit" ? props.patient.firstName : ""}
           />
           <TextField
             autoFocus
@@ -97,6 +140,7 @@ export default function AddPatient(props: any) {
             type="name"
             fullWidth
             variant="standard"
+            defaultValue={request === "edit" ? props.patient.lastName : ""}
           />
           <TextField
             error={!!idError}
@@ -109,6 +153,7 @@ export default function AddPatient(props: any) {
             fullWidth
             variant="standard"
             helperText={idError}
+            defaultValue={request === "edit" ? props.patient.id : ""}
           />
           <TextField
             autoFocus
@@ -119,6 +164,7 @@ export default function AddPatient(props: any) {
             label="city"
             fullWidth
             variant="standard"
+            defaultValue={request === "edit" ? props.patient.city : ""}
           />
           <TextField
             autoFocus
@@ -129,6 +175,7 @@ export default function AddPatient(props: any) {
             label="street"
             fullWidth
             variant="standard"
+            defaultValue={request === "edit" ? props.patient.street : ""}
           />
           <TextField
             autoFocus
@@ -139,6 +186,7 @@ export default function AddPatient(props: any) {
             label="street number"
             fullWidth
             variant="standard"
+            defaultValue={request === "edit" ? props.patient.streetNumber : ""}
           />
           <TextField
             autoFocus
@@ -150,6 +198,7 @@ export default function AddPatient(props: any) {
             type="date"
             fullWidth
             variant="standard"
+            defaultValue={request === "edit" ? props.patient.birthDate : ""}
           />
           <TextField
             error={!!phoneError}
@@ -162,6 +211,7 @@ export default function AddPatient(props: any) {
             fullWidth
             variant="standard"
             helperText={phoneError}
+            defaultValue={request === "edit" ? props.patient.phoneNumber : ""}
           />
           <TextField
             error={!!mobilePhoneError}
@@ -174,6 +224,9 @@ export default function AddPatient(props: any) {
             fullWidth
             variant="standard"
             helperText={mobilePhoneError}
+            defaultValue={
+              request === "edit" ? props.patient.mobilePhoneNumber : ""
+            }
           />
           <TextField
             autoFocus
@@ -183,6 +236,7 @@ export default function AddPatient(props: any) {
             label="picture URL"
             fullWidth
             variant="standard"
+            defaultValue={request === "edit" ? props.patient.picture : ""}
           />
         </DialogContent>
         <DialogActions>

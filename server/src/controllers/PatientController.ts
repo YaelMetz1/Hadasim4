@@ -4,9 +4,20 @@ import * as patientServices from "../services/PatientServices"
 export async function getPatient(req: Request, res: Response) {
   try {
     const patient = await patientServices.getPatient(+(req.params.patientId));
-    res.status(200).json(patient);
+
+    if (patient?.birthDate) {
+      const { birthDate, ...rest } = patient;
+      const dateWithoutTime = new Date(birthDate).toISOString().split('T')[0];
+      const formatedPatient = {
+        ...rest,
+        birthDate: dateWithoutTime,
+      };
+      res.status(200).json(formatedPatient);
+    } else {
+      res.status(200).json(patient);
+    }
   } catch (error) {
-    res.status(400).json({ Message: "Error getting patient" });
+    res.status(400).json({ error: error });
   }
 }
 
@@ -22,10 +33,9 @@ export async function getAllPatients(req: Request, res: Response) {
         birthDate: dateWithoutTime
       };
     });
-
     res.status(200).json(modifiedPatients);
   } catch (error) {
-    res.status(400).json({ Message: "Error getting patients" });
+    res.status(400).json({ error: error });
   }
 }
 
@@ -59,7 +69,7 @@ export async function updatePatient(req: Request, res: Response) {
     const updatedPatient = await patientServices.updatePatient(+(req.params.patientId), formatedPatient);
     res.status(200).json(updatedPatient);
   } catch (error) {
-    res.status(400).json({ Message: "Error updating patient" });
+    res.status(400).json({ error: error });
   }
 }
 

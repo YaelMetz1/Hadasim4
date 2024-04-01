@@ -20,18 +20,8 @@ export async function getAllIllnesses() {
 }
 
 export async function addIllness(illnessData: Partial<Illness>) {
-  const formattedIllnessDate = new Date(illnessData.illnessDate as Date);
-  formattedIllnessDate.setUTCHours(0, 0, 0, 0);
-
-  const formattedRecoveryDate = new Date(illnessData.recoveryDate as Date);
-  formattedRecoveryDate.setUTCHours(0, 0, 0, 0);
-
   const illness = await prisma.illness.create({
-    data: {
-      patientId: illnessData.patientId as number,
-      illnessDate: formattedIllnessDate,
-      recoveryDate: formattedRecoveryDate,
-    },
+    data: illnessData as Illness,
   });
   return illness;
 }
@@ -56,23 +46,27 @@ export async function deleteIllness(illnessId: number) {
 }
 
 export async function getAllIlnessesLastMonth() {
-  const currentDate=new Date();
-  const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth() -1 , 1);
+  const currentDate = new Date();
+  const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
   const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
 
   const patients = await prisma.illness.findMany({
     where: {
-      OR:[{
+      OR: [{
         illnessDate: {
-        lte: lastDay,
-        gte: firstDay,
-      }},
-     { recoveryDate: 
+          lte: lastDay,
+          gte: firstDay,
+        }
+      },
       {
-        lte: lastDay,
-        gte: firstDay,
-      }},
-    ]
-    },  });
+        recoveryDate:
+        {
+          lte: lastDay,
+          gte: firstDay,
+        }
+      },
+      ]
+    },
+  });
   return patients;
 }
