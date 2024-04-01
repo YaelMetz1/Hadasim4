@@ -23,25 +23,25 @@ export async function getIllnessOfPatient(req: Request, res: Response) {
   }
 }
 
-// export async function getAllIllnesses(req: Request, res: Response) {
-//   try {
-//     const illnesses = await illnessServices.getAllIllnesses();
+export async function getAllIllnesses(req: Request, res: Response) {
+  try {
+    const illnesses = await illnessServices.getAllIllnesses();
 
-//     const modifiedIllnesses = illnesses.map(illness => {
-//       const { illnessDate, recoveryDate, ...rest } = illness;
-//       const illnessDateWithoutTime = new Date(illnessDate).toISOString().split('T')[0];
-//       const recoveryDateWithoutTime = new Date(recoveryDate).toISOString().split('T')[0];
-//       return {
-//         ...rest,
-//         illnessDate: illnessDateWithoutTime,
-//         recoveryDate: recoveryDateWithoutTime,
-//       };
-//     });
-//     res.status(200).json(modifiedIllnesses);
-//   } catch (error) {
-//     res.status(400).json({ error: error });
-//   }
-// }
+    const modifiedIllnesses = illnesses.map(illness => {
+      const { illnessDate, recoveryDate, ...rest } = illness;
+      const illnessDateWithoutTime = new Date(illnessDate).toISOString().split('T')[0];
+      const recoveryDateWithoutTime = new Date(recoveryDate).toISOString().split('T')[0];
+      return {
+        ...rest,
+        illnessDate: illnessDateWithoutTime,
+        recoveryDate: recoveryDateWithoutTime,
+      };
+    });
+    res.status(200).json(modifiedIllnesses);
+  } catch (error) {
+    res.status(400).json({ error: error });
+  }
+}
 
 export async function addIllness(req: Request, res: Response) {
   try {
@@ -90,22 +90,22 @@ export async function deleteIllness(req: Request, res: Response) {
   }
 }
 
-// export async function getAllIlnessesLastMonth(res: Response) {
-//   try {
-//     const illnesses = await illnessServices.getAllIlnessesLastMonth();
+export async function getAllIlnessesLastMonth(req: Request, res: Response) {
+  try {
+    const illnesses = await illnessServices.getAllIlnessesLastMonth();
 
-//     const modifiedIllnesses = illnesses.map(illness => {
-//       const { illnessDate, recoveryDate, ...rest } = illness;
-//       const illnessDateWithoutTime = new Date(illnessDate).toISOString().split('T')[0];
-//       const recoveryDateWithoutTime = new Date(recoveryDate).toISOString().split('T')[0];
-//       return {
-//         ...rest,
-//         illnessDate: illnessDateWithoutTime,
-//         recoveryDate: recoveryDateWithoutTime,
-//       };
-//     });
-//     res.status(200).json(modifiedIllnesses);
-//   } catch (error) {
-//     res.status(400).json({ error: error });
-//   }
-// }
+    const modifiedIllnesses = illnesses.map(illness => {
+      const { illnessDate, recoveryDate, ...rest } = illness;
+      const illnessDateWithoutTime = new Date(illnessDate).toISOString().split('T')[0];
+      const recoveryDateWithoutTime = new Date(recoveryDate).toISOString().split('T')[0];
+      return {
+        ...rest,
+        illnessDate: illnessDateWithoutTime,
+        recoveryDate: recoveryDateWithoutTime,
+      };
+    });
+    res.status(200).json(modifiedIllnesses);
+  } catch (error) {
+    res.status(400).json({ error: error });
+  }
+}

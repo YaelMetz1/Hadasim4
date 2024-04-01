@@ -45,25 +45,25 @@ export async function deleteIllness(illnessId: number) {
   return deletedIllness;
 }
 
-// export async function getAllIlnessesLastMonth() {
-//   const currentDate = new Date();
-//   const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
-//   const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
+export async function getAllIlnessesLastMonth() {
+  const currentDate = new Date();
+  const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+  const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
 
-//   const patients = await prisma.illness.findMany({
-//     where: {
-//       OR: [{
-//         illnessDate: {
-//           lte: lastDay,
-//           gte: firstDay,
-//         }},
-//       {
-//         recoveryDate:{
-//           lte: lastDay,
-//           gte: firstDay,
-//         }},
-//       ]
-//     },
-//   });
-//   return patients;
-// }
+  const illnesses = await prisma.illness.findMany({
+    where: {
+      OR: [{
+        illnessDate: {
+          lte: lastDay,
+          gte: firstDay,
+        }},
+      {
+        recoveryDate:{
+          lte: lastDay,
+          gte: firstDay,
+        }},
+      ]
+    },
+  });
+  return illnesses;
+}
