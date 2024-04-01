@@ -46,7 +46,7 @@ export async function addVaccination(req: Request, res: Response) {
 
     const formatedVaccination = {
       ...rest,
-      recoveryDate: formattedDate,
+      vaccinationDate: formattedDate,
     };
     const vaccination = await vaccinationServices.addVaccination(formatedVaccination);
     res.status(200).json(vaccination);
