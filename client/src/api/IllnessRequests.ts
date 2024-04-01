@@ -29,13 +29,13 @@ export async function addIllness(
   }
 }
 
-export async function getAllIlnessesLastMonth() {
-  try {
-    const response = await axios.get(API_URL + `/getAllIlnessesLastMonth`);
-    if (response) {
-      return response.data as Illness[];
-    }
-  } catch (error) {
-    console.error("Error fetching data:", error);
-  }
-}
+// export async function getAllIlnessesLastMonth() {
+//   try {
+//     const response = await axios.get(API_URL + `/getAllIlnessesLastMonth`);
+//     if (response) {
+//       return response.data as Illness[];
+//     }
+//   } catch (error) {
+//     console.error("Error fetching data:", error);
+//   }
+// }

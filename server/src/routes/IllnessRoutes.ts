@@ -5,8 +5,8 @@ import { validate, dataSchema} from "../middleware/AddIllnessMiddleware";
 const illnessRoutes = express.Router();
 
 illnessRoutes.get("/getIllnessOfPatient/:patientId", illnessControlller.getIllnessOfPatient);
-illnessRoutes.get("/getAllIllnesses", illnessControlller.getAllIllnesses);
-illnessRoutes.get("/getAllIlnessesLastMonth", illnessControlller.getAllIlnessesLastMonth);
+// illnessRoutes.get("/getAllIllnesses", illnessControlller.getAllIllnesses);
+//illnessRoutes.get("/getAllIlnessesLastMonth", illnessControlller.getAllIlnessesLastMonth);
 
 illnessRoutes.post("/addIllness",validate(dataSchema),  illnessControlller.addIllness);
 illnessRoutes.put("/updateIllness/:illnessId", illnessControlller.updateIllness);

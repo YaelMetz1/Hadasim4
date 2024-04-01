@@ -41,16 +41,16 @@ export default function SummaryPage() {
     }
   };
 
-  const fetchIllness = async () => {
-    const illnessPatients = await illnessRequests.getAllIlnessesLastMonth();
-    if (illnessPatients) {
-      setIllnessData(illnessPatients.length);
-    }
-  };
+  // const fetchIllness = async () => {
+  //   const illnessPatients = await illnessRequests.getAllIlnessesLastMonth();
+  //   if (illnessPatients) {
+  //     setIllnessData(illnessPatients.length);
+  //   }
+  // };
 
   useEffect(() => {
     fetchVaccin();
-    fetchIllness();
+    //fetchIllness();
   }, []);
 
   return (
@@ -92,7 +92,7 @@ export default function SummaryPage() {
             <Card>
               <CardContent>
                 <Typography component="h2" variant="h5">
-                  Illness patients last month: {illnessData}
+                  {/* Illness patients last month: {illnessData} */}
                 </Typography>
                 <BarChart
                   width={600}
